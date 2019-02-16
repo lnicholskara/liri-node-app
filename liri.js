@@ -50,7 +50,11 @@ function concertThis () {
             concertArray.push(concertInfo);
         };
 
-        console.log(concertArray.join("\n\n"));
+        fs.appendFile("./log.txt", concertArray, function (err){
+            if (err) throw err;
+        });
+
+        console.log("\n**********************************\n" + concertArray.join("\n**********************************\n"));
 
     });
 
@@ -58,6 +62,10 @@ function concertThis () {
 
 //spotify-this-song command
 function spotifyThisSong () {
+
+    if (!searchTerm) {
+        searchTerm = "The Sign";
+    };
 
     spotify.search({ type: 'track', query: searchTerm, limit: 1 }, function(err, data) {
         if (err) {
@@ -70,12 +78,16 @@ function spotifyThisSong () {
             `Album: ${data.tracks.items[0].album.name}`,
             `Preview link: ${data.tracks.items[0].external_urls.spotify}`
         ].join("\n");
+
+        fs.appendFile("./log.txt", songInfo, function (err){
+            if (err) throw err;
+        });
        
         console.log(songInfo); 
 
     });
 
-}
+};
 
 //movie-this command
 function movieThis () {
@@ -100,11 +112,15 @@ function movieThis () {
             `Actors: ${jsonData.Actors}`
         ].join("\n");
 
+        fs.appendFile("./log.txt", movieInfo, function (err){
+            if (err) throw err;
+        });
+
         console.log(movieInfo);
 
     });
 
-}
+};
 
 //do-what-it-says command
 function doWhatItSays () {
@@ -115,7 +131,6 @@ function doWhatItSays () {
         var content = data.split(",");
 
         searchFunction = content[0];
-
         searchTerm = content[1];
 
         spotifyThisSong();
